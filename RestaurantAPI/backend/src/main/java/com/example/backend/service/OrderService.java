@@ -30,7 +30,8 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(Long customerId, Long tableId, List<CreateOrderLine> lines) {
-
+        System.out.println("DEBUG: customerId = " + customerId);
+        System.out.println("DEBUG: tableId = " + tableId);
         User customer = userRepository.findById(customerId)
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found: " + customerId));
 
