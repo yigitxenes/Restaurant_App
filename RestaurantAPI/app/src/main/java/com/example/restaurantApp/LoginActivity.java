@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // RETROFIT KURULUMU (IP Adresini Kontrol Et!)
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.XX:8080/") // <-- BURAYA KENDİ IP ADRESİNİ YAZ
+                .baseUrl("http://192.168.1.122:8080/") // <-- BURAYA KENDİ IP ADRESİNİ YAZ
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -60,14 +60,17 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     User user = response.body();
-                    Toast.makeText(LoginActivity.this, "Hoşgeldin " + user.getName(), Toast.LENGTH_SHORT).show();
+                    Intent intent;
+                    if (user.getRole() == com.example.restaurantApp.enums.Role.STAFF) {
+                        intent = new Intent(LoginActivity.this, StaffTablesActivity.class);
+                    } else {
+                        intent = new Intent(LoginActivity.this, MainActivity.class);
+                    }
 
-                    // Başarılıysa Ana Ekrana Geç ve Kullanıcı Bilgisini Taşı
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("USER_ID", user.getId());
                     intent.putExtra("USER_NAME", user.getName());
                     startActivity(intent);
-                    finish(); // Geri tuşuna basınca tekrar login'e dönmesin diye
+                    finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "Giriş Başarısız! Bilgileri kontrol et.", Toast.LENGTH_LONG).show();
                 }

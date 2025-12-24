@@ -11,6 +11,8 @@ import com.example.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class StaffOrderService {
 
@@ -26,6 +28,10 @@ public class StaffOrderService {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.historyRepository = historyRepository;
+    }
+
+    public Optional<Order> getActiveOrderForTable(Long tableId) {
+        return orderRepository.findActiveOrderByTableId(tableId);
     }
 
     @Transactional

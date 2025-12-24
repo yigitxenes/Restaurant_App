@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TextView textWelcome, textTableInfo;
     private MenuAdapter adapter;
+    private Long currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,12 @@ public class MainActivity extends AppCompatActivity {
         String userName = getIntent().getStringExtra("USER_NAME");
         String tableId = getIntent().getStringExtra("TABLE_ID");
 
+        long userIdParam = getIntent().getLongExtra("USER_ID", -1);
+        if (userIdParam != -1) {
+            currentUserId = userIdParam;
+        }
+
+
         // Bilgileri Ekrana Yaz
         if ("CUSTOMER".equals(userType)) {
             textWelcome.setText("Hoşgeldiniz Misafirimiz");
@@ -54,11 +61,15 @@ public class MainActivity extends AppCompatActivity {
             textWelcome.setText("Merhaba, " + userName);
             textTableInfo.setText("Personel Girişi");
         }
+
         // Sepete Git Butonu
         findViewById(R.id.btnGoToBasket).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, BasketActivity.class);
             // Masa numarasını sepet ekranına da taşıyoruz
             intent.putExtra("TABLE_ID", getIntent().getStringExtra("TABLE_ID"));
+            if (currentUserId != null) {
+                intent.putExtra("USER_ID", currentUserId);
+            }
             startActivity(intent);
         });
 

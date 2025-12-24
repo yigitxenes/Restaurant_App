@@ -32,6 +32,7 @@ public class BasketActivity extends AppCompatActivity {
     private Button confirmButton;
     private BasketAdapter adapter;
     private String tableId; // Masa numarası lazım
+    private Long currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,10 @@ public class BasketActivity extends AppCompatActivity {
 
         // MainActivity'den gelen Masa Numarasını al
         tableId = getIntent().getStringExtra("TABLE_ID");
+        long userIdParam = getIntent().getLongExtra("USER_ID", -1);
+        if (userIdParam != -1) {
+            currentUserId = userIdParam;
+        }
 
         recyclerView = findViewById(R.id.recyclerViewBasket);
         totalPriceText = findViewById(R.id.textTotalPrice);
@@ -62,13 +67,21 @@ public class BasketActivity extends AppCompatActivity {
     }
 
     private void sendOrderToBackend() {
+
         if (BasketManager.getInstance().getItems().isEmpty()) {
             Toast.makeText(this, "Sepetiniz boş!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Backend'in beklediği formatı hazırla
         CreateOrderRequest request = new CreateOrderRequest();
+        if (currentUserId != null) {
+            request.setCustomerId(currentUserId);
+        } else {
+            request.setCustomerId(1L); // <--- MİSAFİR ID'Sİ
+        }
+        // Backend'in beklediği formatı hazırla
+
+        request.setCustomerId(currentUserId);
 
         // Eğer masa numarası yoksa varsayılan 1 yap (Test için)
         Long tId = (tableId != null) ? Long.parseLong(tableId) : 1L;
