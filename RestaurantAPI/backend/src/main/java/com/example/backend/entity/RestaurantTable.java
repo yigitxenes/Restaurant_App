@@ -10,26 +10,28 @@ public class RestaurantTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Table number visible to customers/staff (e.g., 5).
     @Column(name = "table_number", nullable = false)
     private Integer tableNumber;
 
-    // QR code payload stored for lookup (e.g., "tableId=5").
     @Column(name = "qr_code_value", nullable = false)
     private String qrCodeValue;
 
-    // Required by JPA.
+    // YENİ EKLENEN KISIM: Veritabanında yok, sadece API cevabı için
+    @Transient
+    private boolean isOccupied;
+
     public RestaurantTable() {}
 
     public Long getId() { return id; }
-
     public void setId(Long id) { this.id = id; }
 
     public Integer getTableNumber() { return tableNumber; }
-
     public void setTableNumber(Integer tableNumber) { this.tableNumber = tableNumber; }
 
     public String getQrCodeValue() { return qrCodeValue; }
-
     public void setQrCodeValue(String qrCodeValue) { this.qrCodeValue = qrCodeValue; }
+
+    // Yeni Getter/Setter
+    public boolean isOccupied() { return isOccupied; }
+    public void setOccupied(boolean occupied) { isOccupied = occupied; }
 }

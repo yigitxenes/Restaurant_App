@@ -74,28 +74,33 @@ public class StaffOrderActivity extends AppCompatActivity {
 
     private void showOrder(OrderResponse order) {
         currentOrderId = order.getId();
-        currentStatus = order.getStatus(); // Örn: RECEIVED
+        currentStatus = order.getStatus();
 
         textStatus.setText("Durum: " + currentStatus);
 
         StringBuilder details = new StringBuilder();
-        // Items listesini döngüye al (OrderResponse içinde items Listesi olmalı)
-        // Eğer OrderResponse içinde items yoksa eklememiz gerekebilir, şimdilik basit yazıyorum
-        details.append("Sipariş ID: ").append(order.getId()).append("\n\n");
+        details.append("Sipariş No: #").append(order.getId()).append("\n\n");
 
-        // Eğer items listesine erişimin varsa:
-        /*
-        for(OrderResponse.OrderItemResponse item : order.getItems()) {
-             details.append("- ").append(item.getMenuItemName()).append(" x").append(item.getQuantity()).append("\n");
+        // GÜNCELLENEN KISIM: İç içe yapıdan veriyi çekiyoruz
+        if (order.getItems() != null) {
+            for (OrderResponse.OrderItemResponse item : order.getItems()) {
+                String foodName = "Bilinmeyen Ürün";
+                if (item.getMenuItem() != null) {
+                    foodName = item.getMenuItem().getName();
+                }
+
+                details.append("• ").append(foodName)
+                        .append(" x").append(item.getQuantity())
+                        .append("\n");
+            }
+        } else {
+            details.append("Ürün bilgisi bulunamadı.");
         }
-        */
 
         textOrderDetails.setText(details.toString());
 
-        // Buton Metnini Ayarla
         configureNextButton(currentStatus);
     }
-
     private void configureNextButton(String status) {
         btnNextStatus.setVisibility(View.VISIBLE);
         switch (status) {

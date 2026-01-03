@@ -60,8 +60,10 @@ public class StaffTablesActivity extends AppCompatActivity {
 
     private void displayTables(List<RestaurantTable> tables) {
         List<String> tableNames = new ArrayList<>();
+
         for (RestaurantTable t : tables) {
-            tableNames.add("Masa " + t.getTableNumber());
+            String statusSuffix = t.isOccupied() ? " (DOLU 🔴)" : " (BOŞ 🟢)";
+            tableNames.add("Masa " + t.getTableNumber() + statusSuffix);
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, tableNames);
@@ -70,7 +72,6 @@ public class StaffTablesActivity extends AppCompatActivity {
         listViewTables.setOnItemClickListener((parent, view, position, id) -> {
             RestaurantTable selectedTable = tables.get(position);
 
-            // Sipariş Detayına Git
             Intent intent = new Intent(StaffTablesActivity.this, StaffOrderActivity.class);
             intent.putExtra("TABLE_ID", selectedTable.getId());
             intent.putExtra("TABLE_NUM", selectedTable.getTableNumber());

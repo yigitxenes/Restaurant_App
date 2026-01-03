@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // RETROFIT KURULUMU (IP Adresini Kontrol Et!)
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.122:8080/") // <-- BURAYA KENDİ IP ADRESİNİ YAZ
+                .baseUrl("http://192.168.1.122:8080/") 
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
