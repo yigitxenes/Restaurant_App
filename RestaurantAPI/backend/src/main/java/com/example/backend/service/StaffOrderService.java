@@ -11,6 +11,7 @@ import com.example.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.Optional;
 
 @Service
@@ -30,8 +31,10 @@ public class StaffOrderService {
         this.historyRepository = historyRepository;
     }
 
+    // --- GÜNCELLENEN KISIM ---
     public Optional<Order> getActiveOrderForTable(Long tableId) {
-        return orderRepository.findActiveOrderByTableId(tableId);
+        // findActiveOrderByTableId(tableId) YERİNE:
+        return orderRepository.findActiveOrderWithItems(tableId, OrderStatus.DELIVERED);
     }
 
     @Transactional
@@ -60,7 +63,6 @@ public class StaffOrderService {
         h.setChangedBy(staff);
         historyRepository.save(h);
 
-        // ✅ Return a "fully fetched" Order to avoid JSON serialization issues (LAZY proxies).
         return orderRepository.findDetailedById(saved.getId()).orElse(saved);
     }
 

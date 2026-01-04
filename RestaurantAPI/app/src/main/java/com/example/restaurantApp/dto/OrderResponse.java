@@ -14,18 +14,19 @@ public class OrderResponse {
     @SerializedName("items")
     private List<OrderItemResponse> items;
 
-    // Getter'lar
+    // Getter Metodları
     public Long getId() { return id; }
     public String getStatus() { return status; }
     public List<OrderItemResponse> getItems() { return items; }
 
-    // --- İÇ SINIFLAR (Nested Classes) ---
+    // --- İÇ İÇE SINIFLAR (NESTED CLASSES) ---
 
     public static class OrderItemResponse {
         @SerializedName("quantity")
         private Integer quantity;
 
-        @SerializedName("menuItem") // Backend'deki "menuItem" objesini yakalar
+        // Backend "menuItem" objesi gönderiyor, biz de burada onu yakalıyoruz
+        @SerializedName("menuItem")
         private MenuItemDTO menuItem;
 
         public Integer getQuantity() { return quantity; }

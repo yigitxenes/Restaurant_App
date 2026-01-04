@@ -4,10 +4,9 @@ import com.example.backend.dto.UpdateStatusRequest;
 import com.example.backend.entity.Order;
 import com.example.backend.entity.RestaurantTable;
 import com.example.backend.enums.OrderStatus;
+import com.example.backend.repository.OrderRepository;
 import com.example.backend.repository.RestaurantTableRepository;
 import com.example.backend.service.StaffOrderService;
-// OrderRepository eklendi
-import com.example.backend.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,34 +22,47 @@ public class StaffOrderController {
     private RestaurantTableRepository restaurantTableRepository;
 
     @Autowired
-    private OrderRepository orderRepository; // Bunu eklemeyi unutma
+    private OrderRepository orderRepository;
 
-    private final StaffOrderService staffOrderService;
+    @Autowired
+    private StaffOrderService staffOrderService;
 
-    public StaffOrderController(StaffOrderService staffOrderService) {
-        this.staffOrderService = staffOrderService;
-    }
-
-    // GÜNCELLENEN METOD
+    // 1. Tüm Masaları Getir
     @GetMapping("/tables")
     public List<RestaurantTable> getAllTables() {
         List<RestaurantTable> tables = restaurantTableRepository.findAll();
 
-        // Her masa için kontrol et: Aktif sipariş var mı?
         for (RestaurantTable table : tables) {
-            boolean hasOrder = orderRepository.findActiveOrderByTableId(table.getId()).isPresent();
-            table.setOccupied(hasOrder);
+            boolean isOccupied = orderRepository
+                    .findFirstByTableIdAndStatusNot(table.getId(), OrderStatus.DELIVERED)
+                    .isPresent();
+            table.setOccupied(isOccupied);
         }
         return tables;
     }
 
+    // 2. Bir Masanın Aktif Siparişini Getir (HATA BURADAYDI, DÜZELTİLDİ)
     @GetMapping("/tables/{tableId}/order")
     public ResponseEntity<Order> getTableOrder(@PathVariable Long tableId) {
-        Optional<Order> order = staffOrderService.getActiveOrderForTable(tableId);
-        return order.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        // Önce masadaki aktif siparişin ID'sini buluyoruz (Yüzeysel arama)
+        Optional<Order> simpleOrder = orderRepository.findFirstByTableIdAndStatusNot(tableId, OrderStatus.DELIVERED);
+
+        if (simpleOrder.isPresent()) {
+            Long orderId = simpleOrder.get().getId();
+
+            // ŞİMDİ DETAYLI ÇEKİYORUZ (Items + MenuItems ile birlikte)
+            // Bu metod @EntityGraph kullandığı için verileri dolu getirir.
+            Optional<Order> detailedOrder = orderRepository.findDetailedById(orderId);
+
+            if (detailedOrder.isPresent()) {
+                return ResponseEntity.ok(detailedOrder.get());
+            }
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
+    // 3. Sipariş Durumunu Güncelle
     @PatchMapping("/orders/{id}/status")
     public ResponseEntity<?> updateStatus(
             @PathVariable Long id,

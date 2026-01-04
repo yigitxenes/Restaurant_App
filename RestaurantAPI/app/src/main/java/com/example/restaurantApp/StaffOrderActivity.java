@@ -27,7 +27,7 @@ public class StaffOrderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_staff_order); // Layout aşağıda
+        setContentView(R.layout.activity_staff_order);
 
         textTableTitle = findViewById(R.id.textTableTitle);
         textStatus = findViewById(R.id.textCurrentStatus);
@@ -47,7 +47,7 @@ public class StaffOrderActivity extends AppCompatActivity {
 
     private void fetchActiveOrder() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.122:8080/") // IP KONTROL
+                .baseUrl("http://192.168.1.122:8080/") // IP adresini kontrol et
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -81,26 +81,31 @@ public class StaffOrderActivity extends AppCompatActivity {
         StringBuilder details = new StringBuilder();
         details.append("Sipariş No: #").append(order.getId()).append("\n\n");
 
-        // GÜNCELLENEN KISIM: İç içe yapıdan veriyi çekiyoruz
-        if (order.getItems() != null) {
+        // --- DÜZELTİLEN KISIM: ARTIK YORUM SATIRI DEĞİL ---
+        if (order.getItems() != null && !order.getItems().isEmpty()) {
             for (OrderResponse.OrderItemResponse item : order.getItems()) {
-                String foodName = "Bilinmeyen Ürün";
-                if (item.getMenuItem() != null) {
-                    foodName = item.getMenuItem().getName();
+
+                String yemekAdi = "Bilinmeyen Ürün";
+                // İç içe yapıdan (menuItem -> name) isme ulaşıyoruz
+                if (item.getMenuItem() != null && item.getMenuItem().getName() != null) {
+                    yemekAdi = item.getMenuItem().getName();
                 }
 
-                details.append("• ").append(foodName)
-                        .append(" x").append(item.getQuantity())
+                details.append("• ")
+                        .append(yemekAdi)
+                        .append(" x")
+                        .append(item.getQuantity())
                         .append("\n");
             }
         } else {
-            details.append("Ürün bilgisi bulunamadı.");
+            details.append("Siparişte ürün bulunamadı.");
         }
+        // --------------------------------------------------
 
         textOrderDetails.setText(details.toString());
-
         configureNextButton(currentStatus);
     }
+
     private void configureNextButton(String status) {
         btnNextStatus.setVisibility(View.VISIBLE);
         switch (status) {
@@ -139,10 +144,12 @@ public class StaffOrderActivity extends AppCompatActivity {
             public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(StaffOrderActivity.this, "Güncellendi!", Toast.LENGTH_SHORT).show();
+
                     fetchActiveOrder(); // Ekranı yenile
                 } else {
                     Toast.makeText(StaffOrderActivity.this, "Güncelleme Başarısız", Toast.LENGTH_SHORT).show();
                 }
+
             }
 
             @Override
