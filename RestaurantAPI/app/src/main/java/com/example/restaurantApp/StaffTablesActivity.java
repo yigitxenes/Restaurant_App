@@ -34,12 +34,7 @@ public class StaffTablesActivity extends AppCompatActivity {
     }
 
     private void fetchTables() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.122:8080/") // IP ADRESİNİ KONTROL ET
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        RestaurantApiService apiService = retrofit.create(RestaurantApiService.class);
+        RestaurantApiService apiService = RetrofitClient.getApiService();
 
         apiService.getTables().enqueue(new Callback<List<RestaurantTable>>() {
             @Override

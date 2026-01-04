@@ -31,4 +31,14 @@ public class OrderController {
     public Order getOrder(@PathVariable Long id) {
         return orderService.getOrder(id);
     }
+
+    @GetMapping("/customer/{customerId}")
+    public List<Order> getCustomerOrders(@PathVariable Long customerId) {
+        return orderService.getCustomerOrders(customerId);
+    }
+
+    @GetMapping("/table/{tableId}")
+    public List<Order> getTableOrders(@PathVariable Long tableId) {
+        return orderService.getTableOrders(tableId);
+    }
 }

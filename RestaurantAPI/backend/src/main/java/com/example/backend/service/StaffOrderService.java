@@ -11,7 +11,6 @@ import com.example.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
 
 @Service
@@ -24,8 +23,7 @@ public class StaffOrderService {
     public StaffOrderService(
             OrderRepository orderRepository,
             UserRepository userRepository,
-            OrderStatusHistoryRepository historyRepository
-    ) {
+            OrderStatusHistoryRepository historyRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.historyRepository = historyRepository;
@@ -34,7 +32,8 @@ public class StaffOrderService {
     // --- GÜNCELLENEN KISIM ---
     public Optional<Order> getActiveOrderForTable(Long tableId) {
         // findActiveOrderByTableId(tableId) YERİNE:
-        return orderRepository.findActiveOrderWithItems(tableId, OrderStatus.DELIVERED);
+        return orderRepository.findActiveOrderWithItems(tableId, OrderStatus.DELIVERED)
+                .stream().findFirst();
     }
 
     @Transactional
@@ -67,10 +66,9 @@ public class StaffOrderService {
     }
 
     private void validateTransition(OrderStatus oldStatus, OrderStatus newStatus) {
-        boolean ok =
-                (oldStatus == OrderStatus.RECEIVED && newStatus == OrderStatus.PREPARING)
-                        || (oldStatus == OrderStatus.PREPARING && newStatus == OrderStatus.READY)
-                        || (oldStatus == OrderStatus.READY && newStatus == OrderStatus.DELIVERED);
+        boolean ok = (oldStatus == OrderStatus.RECEIVED && newStatus == OrderStatus.PREPARING)
+                || (oldStatus == OrderStatus.PREPARING && newStatus == OrderStatus.READY)
+                || (oldStatus == OrderStatus.READY && newStatus == OrderStatus.DELIVERED);
 
         if (!ok) {
             throw new IllegalArgumentException("Invalid status transition: " + oldStatus + " -> " + newStatus);

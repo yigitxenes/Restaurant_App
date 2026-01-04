@@ -41,22 +41,18 @@ public class StaffOrderController {
         return tables;
     }
 
-    // 2. Bir Masanın Aktif Siparişini Getir (HATA BURADAYDI, DÜZELTİLDİ)
+    // 2. Bir Masanın Aktif Siparişini Getir
     @GetMapping("/tables/{tableId}/order")
     public ResponseEntity<Order> getTableOrder(@PathVariable Long tableId) {
-        // Önce masadaki aktif siparişin ID'sini buluyoruz (Yüzeysel arama)
-        Optional<Order> simpleOrder = orderRepository.findFirstByTableIdAndStatusNot(tableId, OrderStatus.DELIVERED);
+        // JOIN FETCH ile tek sorguda tüm verileri çek (Order + Items + MenuItems)
+        // ORDER BY sayesinde en yeni sipariş ilk sırada gelir
+        List<Order> orders = orderRepository.findActiveOrderWithItems(tableId, OrderStatus.DELIVERED);
 
-        if (simpleOrder.isPresent()) {
-            Long orderId = simpleOrder.get().getId();
+        // Birden fazla aktif sipariş varsa en yenisini al
+        Optional<Order> detailedOrder = orders.stream().findFirst();
 
-            // ŞİMDİ DETAYLI ÇEKİYORUZ (Items + MenuItems ile birlikte)
-            // Bu metod @EntityGraph kullandığı için verileri dolu getirir.
-            Optional<Order> detailedOrder = orderRepository.findDetailedById(orderId);
-
-            if (detailedOrder.isPresent()) {
-                return ResponseEntity.ok(detailedOrder.get());
-            }
+        if (detailedOrder.isPresent()) {
+            return ResponseEntity.ok(detailedOrder.get());
         }
 
         return ResponseEntity.notFound().build();
@@ -67,8 +63,7 @@ public class StaffOrderController {
     public ResponseEntity<?> updateStatus(
             @PathVariable Long id,
             @RequestParam Long staffId,
-            @RequestBody UpdateStatusRequest req
-    ) {
+            @RequestBody UpdateStatusRequest req) {
         try {
             OrderStatus newStatus = OrderStatus.valueOf(req.getNewStatus());
             Order updatedOrder = staffOrderService.updateOrderStatus(staffId, id, newStatus);

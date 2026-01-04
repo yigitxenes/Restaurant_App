@@ -1,4 +1,5 @@
 package com.example.backend.entity;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -18,17 +19,19 @@ public class Order {
     private Long id;
 
     // FK: orders.customer_id -> users.id
-    @JsonIgnoreProperties({"passwordHash"})
+    @JsonIgnoreProperties({ "passwordHash", "hibernateLazyInitializer", "handler" })
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", nullable = false)
     private User customer;
 
     // FK: orders.table_id -> restaurant_tables.id
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "table_id", nullable = false)
     private RestaurantTable table;
 
-    // Stored as MySQL ENUM. Column definition is provided to satisfy schema validation.
+    // Stored as MySQL ENUM. Column definition is provided to satisfy schema
+    // validation.
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "enum('RECEIVED','PREPARING','READY','DELIVERED')")
     private OrderStatus status = OrderStatus.RECEIVED;
@@ -43,28 +46,50 @@ public class Order {
     private List<OrderItem> items = new ArrayList<>();
 
     // Required by JPA.
-    public Order() {}
+    public Order() {
+    }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public User getCustomer() { return customer; }
+    public User getCustomer() {
+        return customer;
+    }
 
-    public void setCustomer(User customer) { this.customer = customer; }
+    public void setCustomer(User customer) {
+        this.customer = customer;
+    }
 
-    public RestaurantTable getTable() { return table; }
+    public RestaurantTable getTable() {
+        return table;
+    }
 
-    public void setTable(RestaurantTable table) { this.table = table; }
+    public void setTable(RestaurantTable table) {
+        this.table = table;
+    }
 
-    public OrderStatus getStatus() { return status; }
+    public OrderStatus getStatus() {
+        return status;
+    }
 
-    public void setStatus(OrderStatus status) { this.status = status; }
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
-    public List<OrderItem> getItems() { return items; }
+    public List<OrderItem> getItems() {
+        return items;
+    }
 
-    public void setItems(List<OrderItem> items) { this.items = items; }
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
+    }
 }
-

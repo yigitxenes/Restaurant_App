@@ -11,8 +11,6 @@ import com.example.restaurantApp.dto.UpdateStatusRequest;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class StaffOrderActivity extends AppCompatActivity {
 
@@ -46,12 +44,7 @@ public class StaffOrderActivity extends AppCompatActivity {
     }
 
     private void fetchActiveOrder() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.122:8080/") // IP adresini kontrol et
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        RestaurantApiService apiService = retrofit.create(RestaurantApiService.class);
+        RestaurantApiService apiService = RetrofitClient.getApiService();
 
         apiService.getTableActiveOrder(tableId).enqueue(new Callback<OrderResponse>() {
             @Override
@@ -128,18 +121,15 @@ public class StaffOrderActivity extends AppCompatActivity {
 
     private void updateStatus() {
         String nextStatus = (String) btnNextStatus.getTag();
-        if (nextStatus == null) return;
+        if (nextStatus == null)
+            return;
 
         UpdateStatusRequest req = new UpdateStatusRequest();
         req.setNewStatus(nextStatus);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.122:8080/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        RestaurantApiService api = retrofit.create(RestaurantApiService.class);
+        RestaurantApiService apiService = RetrofitClient.getApiService();
 
-        api.updateOrderStatus(currentOrderId, staffId, req).enqueue(new Callback<OrderResponse>() {
+        apiService.updateOrderStatus(currentOrderId, staffId, req).enqueue(new Callback<OrderResponse>() {
             @Override
             public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
                 if (response.isSuccessful()) {

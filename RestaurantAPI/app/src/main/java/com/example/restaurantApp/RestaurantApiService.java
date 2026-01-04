@@ -39,10 +39,16 @@ public interface RestaurantApiService {
     // Backend'i /api/menu yaptık, burası da /api/menu olmalı.
     @GET("/api/menu")
     Call<List<MenuItem>> getActiveMenu();
+
     @PATCH("/api/staff/orders/{id}/status")
     Call<OrderResponse> updateOrderStatus(
             @Path("id") Long orderId,
             @Query("staffId") Long staffId,
-            @Body UpdateStatusRequest request
-    );
+            @Body UpdateStatusRequest request);
+
+    @GET("/api/orders/customer/{customerId}")
+    Call<List<OrderResponse>> getCustomerOrders(@Path("customerId") Long customerId);
+
+    @GET("/api/orders/table/{tableId}")
+    Call<List<OrderResponse>> getTableOrders(@Path("tableId") Long tableId);
 }

@@ -32,11 +32,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         recyclerView = findViewById(R.id.recyclerViewMenu);
         textWelcome = findViewById(R.id.textWelcome);
         textTableInfo = findViewById(R.id.textTableInfo);
-
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -49,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         if (userIdParam != -1) {
             currentUserId = userIdParam;
         }
-
 
         // Bilgileri Ekrana Yaz
         if ("CUSTOMER".equals(userType)) {
@@ -73,18 +70,29 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Siparişlerim Butonu
+        findViewById(R.id.btnMyOrders).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CustomerOrdersActivity.class);
+            String tableIdStr = getIntent().getStringExtra("TABLE_ID");
+            if (tableIdStr != null) {
+                try {
+                    intent.putExtra("TABLE_ID", Long.parseLong(tableIdStr));
+                    intent.putExtra("TABLE_NUM", Integer.parseInt(tableIdStr));
+                } catch (NumberFormatException e) {
+                    Toast.makeText(MainActivity.this, "Masa bilgisi geçersiz", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+            startActivity(intent);
+        });
+
         // Menüyü Getir
         fetchMenu();
     }
 
     private void fetchMenu() {
         // IP ADRESİNİ KONTROL ET!
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.122:8080/") // <-- BURAYI DÜZELT
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        RestaurantApiService apiService = retrofit.create(RestaurantApiService.class);
+        RestaurantApiService apiService = RetrofitClient.getApiService();
 
         apiService.getActiveMenu().enqueue(new Callback<List<MenuItem>>() {
             @Override

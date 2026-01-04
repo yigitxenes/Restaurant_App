@@ -23,6 +23,9 @@
             android:name=".StaffOrderActivity"
             android:exported="false" />
         <activity
+            android:name=".CustomerOrdersActivity"
+            android:exported="false" />
+        <activity
             android:name=".StaffTablesActivity"
             android:exported="false" />
         <activity

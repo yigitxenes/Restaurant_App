@@ -102,12 +102,7 @@ public class BasketFragment extends Fragment {
         }
         request.setItems(itemRequests);
 
-        // Retrofit Kurulumu
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.122:8080/") // IP ADRESİNİ KONTROL ET
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        RestaurantApiService apiService = retrofit.create(RestaurantApiService.class);
+        RestaurantApiService apiService = RetrofitClient.getApiService();
         Call<OrderResponse> call = apiService.placeOrder(request);
 
         // ExecutorService ile Arka Plan Thread Başlat

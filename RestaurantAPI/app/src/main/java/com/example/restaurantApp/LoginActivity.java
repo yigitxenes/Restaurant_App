@@ -41,13 +41,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // RETROFIT KURULUMU (IP Adresini Kontrol Et!)
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.122:8080/") 
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        RestaurantApiService apiService = retrofit.create(RestaurantApiService.class);
+        RestaurantApiService apiService = RetrofitClient.getApiService();
 
         // İstek Hazırlama
         LoginRequest request = new LoginRequest();
