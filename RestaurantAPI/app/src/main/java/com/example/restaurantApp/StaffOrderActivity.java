@@ -74,12 +74,12 @@ public class StaffOrderActivity extends AppCompatActivity {
         StringBuilder details = new StringBuilder();
         details.append("Sipariş No: #").append(order.getId()).append("\n\n");
 
-        // --- DÜZELTİLEN KISIM: ARTIK YORUM SATIRI DEĞİL ---
+        // --- Fixed Block ---
         if (order.getItems() != null && !order.getItems().isEmpty()) {
             for (OrderResponse.OrderItemResponse item : order.getItems()) {
 
-                String yemekAdi = "Bilinmeyen Ürün";
-                // İç içe yapıdan (menuItem -> name) isme ulaşıyoruz
+                String yemekAdi = "Unknown";
+                // Get nested name
                 if (item.getMenuItem() != null && item.getMenuItem().getName() != null) {
                     yemekAdi = item.getMenuItem().getName();
                 }
@@ -91,9 +91,9 @@ public class StaffOrderActivity extends AppCompatActivity {
                         .append("\n");
             }
         } else {
-            details.append("Siparişte ürün bulunamadı.");
+            details.append("No items found.");
         }
-        // --------------------------------------------------
+        // -------------------
 
         textOrderDetails.setText(details.toString());
         configureNextButton(currentStatus);

@@ -7,13 +7,14 @@ import java.util.Map;
 
 public class BasketManager {
 
-    // Tek bir tane sepet olsun (Singleton yapısı)
+    // Singleton instance
     private static BasketManager instance;
 
-    // Ürün ID'si ve Adedi (Hangi üründen kaç tane var?)
+    // Item ID and Quantity map
     private Map<MenuItem, Integer> items = new HashMap<>();
 
-    private BasketManager() {}
+    private BasketManager() {
+    }
 
     public static synchronized BasketManager getInstance() {
         if (instance == null) {
@@ -22,16 +23,16 @@ public class BasketManager {
         return instance;
     }
 
-    // Sepete ürün ekle
+    // Add item to basket
     public void addItem(MenuItem item) {
         if (items.containsKey(item)) {
-            items.put(item, items.get(item) + 1); // Varsa 1 artır
+            items.put(item, items.get(item) + 1); // Increment count
         } else {
-            items.put(item, 1); // Yoksa 1 tane ekle
+            items.put(item, 1); // Add new
         }
     }
 
-    // Sepetten ürün sil (Opsiyonel)
+    // Remove item
     public void removeItem(MenuItem item) {
         if (items.containsKey(item)) {
             int currentQty = items.get(item);
@@ -43,17 +44,17 @@ public class BasketManager {
         }
     }
 
-    // Sepeti temizle (Sipariş verince lazım olacak)
+    // Clear basket
     public void clearBasket() {
         items.clear();
     }
 
-    // Sepetteki ürünleri getir
+    // Get items
     public Map<MenuItem, Integer> getItems() {
         return items;
     }
 
-    // Toplam tutarı hesapla
+    // Calculate total price
     public double getTotalPrice() {
         double total = 0;
         for (Map.Entry<MenuItem, Integer> entry : items.entrySet()) {

@@ -11,18 +11,16 @@ import com.journeyapps.barcodescanner.ScanOptions;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(),
             result -> {
-                if(result.getContents() == null) {
+                if (result.getContents() == null) {
 
                     Toast.makeText(WelcomeActivity.this, "Vazgeçildi", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    String qrValue = result.getContents(); // Örn: "5" veya "Masa-5"
+                    String qrValue = result.getContents(); // E.g. "5" or "Table-5"
 
                     Toast.makeText(WelcomeActivity.this, "Masa Bulundu: " + qrValue, Toast.LENGTH_SHORT).show();
-
 
                     Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
                     intent.putExtra("USER_TYPE", "CUSTOMER");
@@ -39,7 +37,7 @@ public class WelcomeActivity extends AppCompatActivity {
         Button btnCustomer = findViewById(R.id.btnCustomer);
         Button btnStaff = findViewById(R.id.btnStaff);
 
-        // Müşteri Girişi: QR Tarayıcıyı Başlat
+        // Customer Login: Start QR Scanner
         btnCustomer.setOnClickListener(v -> {
             ScanOptions options = new ScanOptions();
             options.setPrompt("Lütfen Masadaki QR Kodu Okutun");
@@ -49,7 +47,7 @@ public class WelcomeActivity extends AppCompatActivity {
             barcodeLauncher.launch(options);
         });
 
-        // Personel Girişi: Login Ekranına Git
+        // Staff Login: Go to Login Screen
         btnStaff.setOnClickListener(v -> {
             Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
             startActivity(intent);

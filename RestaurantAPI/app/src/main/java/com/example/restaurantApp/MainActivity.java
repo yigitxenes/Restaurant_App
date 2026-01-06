@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Intent'ten Gelen Bilgileri Al (Kim giriş yaptı?)
+        // Get intent data
         String userType = getIntent().getStringExtra("USER_TYPE");
         String userName = getIntent().getStringExtra("USER_NAME");
         String tableId = getIntent().getStringExtra("TABLE_ID");
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             currentUserId = userIdParam;
         }
 
-        // Bilgileri Ekrana Yaz
+        // Display info
         if ("CUSTOMER".equals(userType)) {
             textWelcome.setText("Hoşgeldiniz Misafirimiz");
             if (tableId != null) {
@@ -59,10 +59,10 @@ public class MainActivity extends AppCompatActivity {
             textTableInfo.setText("Personel Girişi");
         }
 
-        // Sepete Git Butonu
+        // Go to Basket Button
         findViewById(R.id.btnGoToBasket).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, BasketActivity.class);
-            // Masa numarasını sepet ekranına da taşıyoruz
+            // Pass table ID
             intent.putExtra("TABLE_ID", getIntent().getStringExtra("TABLE_ID"));
             if (currentUserId != null) {
                 intent.putExtra("USER_ID", currentUserId);
@@ -86,12 +86,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Menüyü Getir
+        // Fetch Menu
         fetchMenu();
     }
 
     private void fetchMenu() {
-        // IP ADRESİNİ KONTROL ET!
+        // Check IP Address
         RestaurantApiService apiService = RetrofitClient.getApiService();
 
         apiService.getActiveMenu().enqueue(new Callback<List<MenuItem>>() {

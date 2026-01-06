@@ -25,7 +25,7 @@ public interface RestaurantApiService {
     @POST("/api/orders")
     Call<OrderResponse> placeOrder(@Body CreateOrderRequest request);
 
-    // DÜZELTME: {id} parametresini metoda ekledik
+    // FIX: Added {id} parameter
     @GET("/api/orders/{id}")
     Call<OrderResponse> getOrderID(@Path("id") Long id);
 
@@ -35,8 +35,8 @@ public interface RestaurantApiService {
     @GET("/api/staff/tables/{id}/order")
     Call<OrderResponse> getTableActiveOrder(@Path("id") Long tableId);
 
-    // DÜZELTME: Başındaki @GET eksikti, onu ekledik.
-    // Backend'i /api/menu yaptık, burası da /api/menu olmalı.
+    // FIX: Added missing @GET annotation
+    // Backend uses /api/menu
     @GET("/api/menu")
     Call<List<MenuItem>> getActiveMenu();
 

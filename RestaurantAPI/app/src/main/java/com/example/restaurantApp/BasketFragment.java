@@ -44,19 +44,22 @@ public class BasketFragment extends Fragment {
     private Long currentUserId;
 
     public BasketFragment() {
-        // Boş kurucu metod gerekli
+        // Required empty constructor
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_basket, container, false); // activity_basket xml'ini kullanıyoruz
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_basket, container, false); // activity_basket xml'ini
+                                                                                  // kullanıyoruz
 
         // Argümanları al
         if (getArguments() != null) {
             tableId = getArguments().getString("TABLE_ID");
             currentUserId = getArguments().getLong("USER_ID", -1);
-            if (currentUserId == -1) currentUserId = null;
+            if (currentUserId == -1)
+                currentUserId = null;
         }
 
         recyclerView = view.findViewById(R.id.recyclerViewBasket);
@@ -80,14 +83,14 @@ public class BasketFragment extends Fragment {
         totalPriceText.setText(total + " ₺");
     }
 
-    // BACKGROUND THREAD IMPLEMENTATION
+    // Background Thread Impl
     private void sendOrderWithBackgroundThread() {
         if (BasketManager.getInstance().getItems().isEmpty()) {
             Toast.makeText(getContext(), "Sepetiniz boş!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // İstek nesnesini hazırla (UI Thread'de yapılabilir)
+        // Prepare request
         CreateOrderRequest request = new CreateOrderRequest();
         request.setCustomerId(currentUserId != null ? currentUserId : 1L);
         Long tId = (tableId != null) ? Long.parseLong(tableId) : 1L;
@@ -105,31 +108,31 @@ public class BasketFragment extends Fragment {
         RestaurantApiService apiService = RetrofitClient.getApiService();
         Call<OrderResponse> call = apiService.placeOrder(request);
 
-        // ExecutorService ile Arka Plan Thread Başlat
+        // Start Background Thread
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
         executor.execute(() -> {
-            // BURASI ARKA PLAN THREAD'İ (Background Thread)
+            // Background Thread
             try {
-                // Senkron istek (enqueue yerine execute)
+                // Synchronous request
                 Response<OrderResponse> response = call.execute();
 
-                // UI Güncellemek için Main Thread'e geri dön
+                // Return to Main Thread
                 handler.post(() -> {
                     if (response.isSuccessful()) {
                         Toast.makeText(getContext(), "Siparişiniz Alındı! Afiyet Olsun 🍜", Toast.LENGTH_LONG).show();
                         BasketManager.getInstance().clearBasket();
-                        if (getActivity() != null) getActivity().finish();
+                        if (getActivity() != null)
+                            getActivity().finish();
                     } else {
                         Toast.makeText(getContext(), "Hata: " + response.code(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
             } catch (IOException e) {
-                handler.post(() ->
-                        Toast.makeText(getContext(), "Bağlantı Hatası: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
+                handler.post(() -> Toast
+                        .makeText(getContext(), "Bağlantı Hatası: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
         });
     }

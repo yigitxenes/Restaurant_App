@@ -14,10 +14,10 @@ public class RestaurantTable implements Serializable {
     @SerializedName("qrCodeValue")
     private String qrCodeValue;
 
-    // YENİ EKLENEN KISIM
-    // Backend'de boolean getter "isOccupied()" olduğu için JSON'a "occupied" olarak gelebilir.
-    // Garanti olsun diye alternatif isimleri de destekleyebiliriz ama genelde "occupied" gelir.
-    @SerializedName(value = "occupied", alternate = {"isOccupied"})
+    // NEW SECTION
+    // Backend getter is "isOccupied", mapped to "occupied" in JSON
+    // Supporting alternate attributes for safety
+    @SerializedName(value = "occupied", alternate = { "isOccupied" })
     private boolean isOccupied;
 
     public RestaurantTable() {
@@ -47,7 +47,7 @@ public class RestaurantTable implements Serializable {
         this.qrCodeValue = qrCodeValue;
     }
 
-    // Yeni Getter ve Setter
+    // New Getters and Setters
     public boolean isOccupied() {
         return isOccupied;
     }

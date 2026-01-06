@@ -39,32 +39,69 @@ public class MenuItem implements Serializable {
     }
 
     // Getter ve Setter'lar
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getName() {
+        return name;
+    }
 
-    public Double getPrice() { return price; }
-    public void setPrice(Double price) { this.price = price; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public String getDescription() {
+        return description;
+    }
 
-    public Boolean getAvailable() { return available; }
-    public void setAvailable(Boolean available) { this.available = available; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public Double getPrice() {
+        return price;
+    }
 
-    // --- BU KISIM ÇOK ÖNEMLİ (HashMap'in doğru çalışması için) ---
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    // --- Validates proper HashMap function ---
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         MenuItem menuItem = (MenuItem) o;
         return Objects.equals(id, menuItem.id);
     }

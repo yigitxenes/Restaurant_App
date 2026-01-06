@@ -43,12 +43,12 @@ public class LoginActivity extends AppCompatActivity {
 
         RestaurantApiService apiService = RetrofitClient.getApiService();
 
-        // İstek Hazırlama
+        // Prepare request
         LoginRequest request = new LoginRequest();
         request.setEmail(email);
         request.setPassword(password);
 
-        // Sunucuya Gönderme
+        // Send to server
         apiService.login(request).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -66,7 +66,8 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
-                    Toast.makeText(LoginActivity.this, "Giriş Başarısız! Bilgileri kontrol et.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Giriş Başarısız! Bilgileri kontrol et.", Toast.LENGTH_LONG)
+                            .show();
                 }
             }
 

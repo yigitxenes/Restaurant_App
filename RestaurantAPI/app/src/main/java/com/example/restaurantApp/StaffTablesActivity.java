@@ -24,8 +24,8 @@ public class StaffTablesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Basit bir layout oluşturalım (XML dosyası oluşturmaya gerek kalmadan kodla halledelim veya basit bir listview kullan)
-        setContentView(R.layout.activity_staff_tables); // XML'i aşağıda vereceğim
+        // Set layout
+        setContentView(R.layout.activity_staff_tables);
 
         listViewTables = findViewById(R.id.listViewTables);
         currentStaffId = getIntent().getLongExtra("USER_ID", -1);

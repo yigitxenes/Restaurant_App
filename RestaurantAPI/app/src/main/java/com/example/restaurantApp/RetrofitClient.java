@@ -10,7 +10,7 @@ public class RetrofitClient {
     public static Retrofit getClient() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    // build.gradle'dan gelen IP adresini burada kullanıyoruz
+                    // IP address from build.gradle
                     .baseUrl(BuildConfig.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
@@ -18,7 +18,7 @@ public class RetrofitClient {
         return retrofit;
     }
 
-    // API Servisini almak için kısayol metodu
+    // getting API service
     public static RestaurantApiService getApiService() {
         return getClient().create(RestaurantApiService.class);
     }

@@ -20,7 +20,7 @@ import java.util.Map;
 public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.BasketViewHolder> {
 
     private List<MenuItem> cartItems;
-    private Runnable onListUpdatedListener; // Listeden eleman silinince Activity'e haber vermek için
+    private Runnable onListUpdatedListener; // Notify Activity on item removal
 
     public BasketAdapter(Runnable onListUpdatedListener) {
         this.onListUpdatedListener = onListUpdatedListener;
@@ -28,7 +28,7 @@ public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.BasketView
     }
 
     public void updateData() {
-        // Map yapısını Listeye çeviriyoruz ki RecyclerView gösterebilsin
+        // Convert Map to List for RecyclerView
         this.cartItems = new ArrayList<>(BasketManager.getInstance().getItems().keySet());
         notifyDataSetChanged();
     }
@@ -50,11 +50,11 @@ public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.BasketView
         holder.quantityText.setText(quantity + " Adet");
         holder.priceText.setText(totalPrice + " ₺");
 
-        // Silme Butonu
+        // Delete Button
         holder.deleteButton.setOnClickListener(v -> {
             BasketManager.getInstance().removeItem(item);
-            updateData(); // Listeyi yenile
-            onListUpdatedListener.run(); // Activity'e "Fiyatı güncelle" de
+            updateData(); // Refresh list
+            onListUpdatedListener.run(); // Notify Activity
         });
     }
 

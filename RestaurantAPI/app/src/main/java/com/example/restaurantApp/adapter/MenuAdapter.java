@@ -28,7 +28,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
     @NonNull
     @Override
     public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Tasarım dosyasını (item_menu.xml) bağladığımız yer
+        // Inflate layout (item_menu.xml)
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_menu, parent, false);
         return new MenuViewHolder(view);
     }
@@ -40,17 +40,32 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         holder.nameText.setText(item.getName());
         holder.categoryText.setText(item.getCategory());
         holder.priceText.setText(item.getPrice() + " ₺");
-        holder.foodImage.setImageResource(R.mipmap.ic_launcher);
+        // Dynamic image loading: Match item name to drawable resource
+        // E.g. "Cheese Burger" -> "cheese_burger"
+        Context context = holder.itemView.getContext();
+        String imageName = item.getName().toLowerCase(java.util.Locale.ENGLISH)
+                .replace(" ", "_")
+                .replace("ç", "c")
+                .replace("ğ", "g")
+                .replace("ı", "i")
+                .replace("ö", "o")
+                .replace("ş", "s")
+                .replace("ü", "u");
 
-        // GÜNCELLENEN KISIM:
+        int resourceId = context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
+
+        if (resourceId != 0) {
+            holder.foodImage.setImageResource(resourceId);
+        } else {
+            holder.foodImage.setImageResource(R.mipmap.ic_launcher);
+        }
+
         holder.addButton.setOnClickListener(v -> {
-            // 1. Sepete Ekle
+            // 1. Add to Basket
             BasketManager.getInstance().addItem(item);
 
-            // 2. Kullanıcıya Bilgi Ver
+            // 2. Notify User
             Toast.makeText(v.getContext(), item.getName() + " sepete eklendi!", Toast.LENGTH_SHORT).show();
-
-            // (İsteğe bağlı) Burada ana ekrandaki "Sepete Git" butonunu güncelleyebiliriz ileride.
         });
     }
 
@@ -59,7 +74,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         return menuList.size();
     }
 
-    // İŞTE SORDUĞUN "ViewHolder" SINIFI BURASI
+    // ViewHolder Class
     public static class MenuViewHolder extends RecyclerView.ViewHolder {
 
         ImageView foodImage;
@@ -68,7 +83,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
 
         public MenuViewHolder(@NonNull View itemView) {
             super(itemView);
-            // item_menu.xml içindeki ID'leri burada bulup eşleştiriyoruz
+            // Bind views
             foodImage = itemView.findViewById(R.id.imageFood);
             nameText = itemView.findViewById(R.id.textName);
             categoryText = itemView.findViewById(R.id.textCategory);
